@@ -1,21 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../connections/postgre");
-const { selectUser, authenticateUSer} = require("../constants/queries");
+const { selectUser, registerUser} = require("../constants/queries");
 const bcrypt = require('bcrypt');
 const jwtGenerator = require('../utils/jwtGenerator');
 const authorize = require('../middlewares/authorize');
 
 router.post("/register",async(req, res) => {
   try {
-    const { user_name, email, password } = req.body;
+    const { userName, email, password } = req.body;
     const userExists = await pool.query(selectUser, [email]);
     if(userExists.rows.length){
       return res.status(401).send({failMessage:require('../constants/messages').userExists});
     }
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password,salt); 
-    const registeredUser = await pool.query(registerUser, [user_name, email, bcryptPassword]);
+    const registeredUser = await pool.query(registerUser, [userName, email, bcryptPassword]);
     const token = jwtGenerator(registeredUser.rows[0].user_id);
     res.json({token});
   } catch (err) {
