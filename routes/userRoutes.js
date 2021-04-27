@@ -1,40 +1,57 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../connections/postgre");
-const { selectUser, registerUser} = require("../constants/queries");
-const bcrypt = require('bcrypt');
-const jwtGenerator = require('../utils/jwtGenerator');
-const authorize = require('../middlewares/authorize');
+const {
+  selectUser,
+  registerUser,
+  selectById,
+} = require("../constants/queries");
+const bcrypt = require("bcrypt");
+const jwtGenerator = require("../utils/jwtGenerator");
+const authorize = require("../middlewares/authorize");
 
-router.post("/register",async(req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
     const userExists = await pool.query(selectUser, [email]);
-    if(userExists.rows.length){
-      return res.send({failMessage:require('../constants/messages').userExists});
+    if (userExists.rows.length) {
+      return res.send({
+        failMessage: require("../constants/messages").userExists,
+      });
     }
     const salt = await bcrypt.genSalt(10);
-    const bcryptPassword = await bcrypt.hash(password,salt); 
-    const registeredUser = await pool.query(registerUser, [userName, email, bcryptPassword]);
+    const bcryptPassword = await bcrypt.hash(password, salt);
+    const registeredUser = await pool.query(registerUser, [
+      userName,
+      email,
+      bcryptPassword,
+    ]);
     const token = jwtGenerator(registeredUser.rows[0].user_id);
-    res.json({token});
+    res.json({ token });
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-router.post("/login",async(req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const userExists = await pool.query(selectUser, [email]);
-    if(!userExists.rows.length ){
-      return res.send({failMessage:require('../constants/messages').incorrectCreds});
+    if (!userExists.rows.length) {
+      return res.send({
+        failMessage: require("../constants/messages").incorrectCreds,
+      });
     }
-    const isPasswordsMatched = await bcrypt.compare(password,userExists.rows[0].password);
-    if(!isPasswordsMatched)
-      return res.send({failMessage:require('../constants/messages').incorrectCreds});
-      const token = jwtGenerator(userExists.rows[0].user_id);
-      res.json({token});
+    const isPasswordsMatched = await bcrypt.compare(
+      password,
+      userExists.rows[0].password
+    );
+    if (!isPasswordsMatched)
+      return res.send({
+        failMessage: require("../constants/messages").incorrectCreds,
+      });
+    const token = jwtGenerator(userExists.rows[0].user_id);
+    res.json({ token });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -42,18 +59,14 @@ router.post("/login",async(req, res) => {
 
 router.get("/user-data", authorize, async (req, res) => {
   try {
-    const userData = await pool.query(
-      "SELECT * FROM users WHERE user_id=$1",
-      [req.user]
-    );
+    const userData = await pool.query(selectById, [req.user]);
     res.send(userData.rows[0]);
   } catch (err) {
     res.send({ error: err });
   }
 });
 
-
-router.get('/is-verify',authorize,async(req,res)=>{
+router.get("/is-verify", authorize, async (req, res) => {
   try {
     res.status(201).send(true);
   } catch (error) {

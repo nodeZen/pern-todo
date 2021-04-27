@@ -20,7 +20,7 @@ function App() {
   };
 
   const isAuth = useCallback(async()=>{
-    const response  = await axios.get("http://localhost:3001/user/is-verify",{
+    const response  = await axios.get("/user/is-verify",{
       headers:{
         token:localStorage.token
       }

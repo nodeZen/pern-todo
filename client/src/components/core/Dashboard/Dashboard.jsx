@@ -8,7 +8,7 @@ const Dashboard = ({ setAuth }) => {
   const [id,setId]=useState("");
   
   const getData = async () => {
-    const response = await axios.get("http://localhost:3001/user/user-data", {
+    const response = await axios.get("/user/user-data", {
       headers: {
         token: localStorage.token,
       },

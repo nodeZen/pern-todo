@@ -2,3 +2,5 @@
 /config
 /build
 /coverage
+
+.env

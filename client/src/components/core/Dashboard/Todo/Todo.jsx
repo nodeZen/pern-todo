@@ -45,7 +45,7 @@ const Todo = ({ userId }) => {
             Add Task
           </button>
         </div>
-        {errMessage && <div className="error-message">{errMessage}</div>}
+        {errMessage && <label className="error-message">{errMessage}</label>}
       </form>
       {allTodos.length? <div className="container my-5">
         {allTodos.map((todo) => {

@@ -6,19 +6,22 @@ import "./TodoItem.scss";
 
 const TodoItem = ({ id, desrciption }) => {
   const dispatch = useDispatch();
-  const [editMode, seteditMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [taskDescription, setTaskDescription] = useState(desrciption);
+  const [errMessage, setErrMessage] = useState();
 
   const deleteTodoHandler = () => {
     dispatch(deleteTodo(id));
   };
 
   const editTaskHandler = () => {
-    dispatch(editTodo(id, taskDescription));
-  };
-
-  const editHandler = (boolean) => {
-    seteditMode(boolean);
+    if(taskDescription.length){
+      dispatch(editTodo(id, taskDescription));
+      setEditMode(false);
+    }else{
+      setErrMessage("Please enter task description");
+      setEditMode(true);
+    }
   };
 
   const taskChangeHandler = (e) => {
@@ -29,11 +32,16 @@ const TodoItem = ({ id, desrciption }) => {
     <div className="row my-3 todo-item">
       <div className="col-md-10">
         {editMode ? (
-          <input
-            className="form-control edit-task"
-            value={taskDescription}
-            onChange={taskChangeHandler}
-          />
+          <div>
+            <input
+              className="form-control edit-task"
+              value={taskDescription}
+              onChange={taskChangeHandler}
+            />
+            {errMessage && (
+              <div className="my-3 error-message">{errMessage}</div>
+            )}
+          </div>
         ) : (
           <h3>{desrciption}</h3>
         )}
@@ -41,18 +49,17 @@ const TodoItem = ({ id, desrciption }) => {
       <div className="col-md-1">
         {!editMode ? (
           <button
-            className="btn btn-info"
+            className="btn btn-info todo-item-button"
             onClick={() => {
-              editHandler(true);
+              setEditMode(true);
             }}
           >
             Edit
           </button>
         ) : (
           <button
-            className="btn btn-success"
+            className="btn btn-success todo-item-button" 
             onClick={() => {
-              editHandler(false);
               editTaskHandler();
             }}
           >

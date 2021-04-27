@@ -3,7 +3,7 @@ import { getNewTodoList } from "../store/todo-slice";
 
 export const getAllTodos = () => (dispatch) => {
   return axios
-    .get("http://localhost:3001/todo-crud", {
+    .get("/todo-crud", {
       headers: {
         token: localStorage.token,
       },
@@ -19,7 +19,7 @@ export const addTodo = (userId,description) => (dispatch) => {
         description
     }
     return axios
-    .post("http://localhost:3001/todo-crud",body, {
+    .post("/todo-crud",body, {
       headers: {
         token: localStorage.token,
       },
@@ -31,7 +31,7 @@ export const addTodo = (userId,description) => (dispatch) => {
 
 export const deleteTodo = (todoId) => (dispatch) => {
   return axios
-  .delete("http://localhost:3001/todo-crud/"+todoId, {
+  .delete("/todo-crud/"+todoId, {
     headers: {
       token: localStorage.token,
     },
@@ -43,7 +43,7 @@ export const deleteTodo = (todoId) => (dispatch) => {
 
 export const editTodo = (todoId,description) => (dispatch) => {
   return axios
-  .put("http://localhost:3001/todo-crud/"+todoId,{description}, {
+  .put("/todo-crud/"+todoId,{description}, {
     headers: {
       token: localStorage.token,
     },

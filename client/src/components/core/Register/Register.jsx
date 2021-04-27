@@ -25,7 +25,7 @@ const Register = ({ setAuth }) => {
       if (userName.length && password.length) {
         try {
           const response = await axios.post(
-            "http://localhost:3001/user/register",
+            "/user/register",
             body
           );
           if (response.data.token) {
@@ -48,7 +48,7 @@ const Register = ({ setAuth }) => {
   return (
     <Fragment>
       <form onSubmit={onSubmitForm}>
-        <h1 className="text-center my-5">Register User</h1>
+        <h1 className="text-center my-5">Pern ToDo Register</h1>
         <input
           type="text"
           placeholder="User Name"
@@ -77,7 +77,7 @@ const Register = ({ setAuth }) => {
         <button className="btn btn-success btn-block" type="submit">
           Register
         </button>
-        <Link to="/login">Login</Link>
+        <div className="my-3">Already have an account?{" "}<Link to="/login">Login</Link></div> 
       </form>
     </Fragment>
   );
