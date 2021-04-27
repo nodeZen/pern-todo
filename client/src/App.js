@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -19,23 +19,35 @@ function App() {
     setIsAuthenticated(boolen);
   };
 
-  const isAuth = async()=>{
+  const isAuth = useCallback(async()=>{
     const response  = await axios.get("http://localhost:3001/user/is-verify",{
       headers:{
         token:localStorage.token
       }
     });
     response.data === true ? setAuth(true) : setAuth(false);
-  }
+  },[])
 
   useEffect(()=>{
     isAuth();
-  },[]);
+  },[isAuth]);
+
   return (
     <Fragment>
       <Router>
         <div className="container">
           <Switch>
+            <Route
+              exact
+              path="/"
+              render={(props) =>
+                !isAuthenticated ? (
+                  <Login {...props} setAuth={setAuth} />
+                ) : (
+                  <Redirect to="/dashboard" />
+                )
+              }
+            />
             <Route
               exact
               path="/login"

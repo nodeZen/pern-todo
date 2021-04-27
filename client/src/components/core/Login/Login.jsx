@@ -8,6 +8,8 @@ const Register = ({ setAuth }) => {
     password: "",
   });
 
+  const [errMessage, setErrMessage] = useState();
+
   const { email, password } = inputs;
 
   const onChangeInputs = (e) => {
@@ -22,8 +24,12 @@ const Register = ({ setAuth }) => {
         "http://localhost:3001/user/login",
         body
       );
-      localStorage.setItem("token",response.data.token);
+      if(response.data.token){
+        localStorage.setItem("token",response.data.token);
       setAuth(true);
+      }else if(response.data.failMessage){
+        setErrMessage(response.data.failMessage);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -49,6 +55,9 @@ const Register = ({ setAuth }) => {
           value={password}
           onChange={onChangeInputs}
         ></input>
+        {errMessage && (
+          <div className="my-3 error-message">{errMessage}</div>
+        )}
         <button className="btn btn-success btn-block" type="submit">
           Login
         </button>

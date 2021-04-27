@@ -1,26 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../connections/postgre");
-const authorization = require("../middlewares/authorize");
+const authorize = require("../middlewares/authorize");
 
-router.get("/", authorization, async (req, res) => {
+router.get("/", authorize, async (req, res) => {
   try {
-    const allToDos = await pool.query(
-      "SELECT user_name FROM users WHERE user_id=$1",
+    const userData = await pool.query(
+      "SELECT * FROM todo WHERE user_id=$1",
       [req.user]
     );
-    res.send(allToDos.rows[0].user_name);
+    res.send(userData.rows);
   } catch (err) {
     res.send({ error: err });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", authorize,async (req, res) => {
+  console.log(req.body,"Request Body")
   try {
-    const { description } = req.body;
+    const { userId, description } = req.body;
     const allToDos = await pool.query(
-      "INSERT INTO todo (description) values($1) RETURNING *",
-      [description]
+      "INSERT INTO todo (user_id,description) values ($1,$2) RETURNING *",
+      [userId, description]
     );
     res.send(allToDos.rows);
   } catch (err) {
@@ -28,7 +29,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",authorize ,async (req, res) => {
   try {
     const { description } = req.body;
     const { id } = req.params;
@@ -42,7 +43,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authorize, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM todo WHERE todo_id=$1", [id]);

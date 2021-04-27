@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { registerUser } from "../../../services/auth-services";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import "./Register.scss";
+import { validateEmail } from "../../../utils";
 
 const Register = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
@@ -9,6 +10,7 @@ const Register = ({ setAuth }) => {
     email: "",
     password: "",
   });
+  const [errMessage, setErrMessage] = useState();
 
   const { email, password, userName } = inputs;
 
@@ -19,15 +21,23 @@ const Register = ({ setAuth }) => {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const body = { userName, email, password };
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/user/register",
-        body
-      );
-      localStorage.setItem("token",response.data.token);
-      setAuth(true);
-    } catch (error) {
-      console.log(error);
+    if (userName.length && validateEmail(email) && password.length) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/user/register",
+          body
+        );
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+          setAuth(true);
+        } else if (response.data.failMessage) {
+          setErrMessage(response.data.failMessage);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setErrMessage("Please fill in all fields");
     }
   };
 
@@ -59,6 +69,7 @@ const Register = ({ setAuth }) => {
           value={password}
           onChange={onChangeInputs}
         ></input>
+        {errMessage && <div className="my-3 error-message">{errMessage}</div>}
         <button className="btn btn-success btn-block" type="submit">
           Register
         </button>

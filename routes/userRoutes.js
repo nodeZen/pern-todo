@@ -11,7 +11,7 @@ router.post("/register",async(req, res) => {
     const { userName, email, password } = req.body;
     const userExists = await pool.query(selectUser, [email]);
     if(userExists.rows.length){
-      return res.status(401).send({failMessage:require('../constants/messages').userExists});
+      return res.send({failMessage:require('../constants/messages').userExists});
     }
     const salt = await bcrypt.genSalt(10);
     const bcryptPassword = await bcrypt.hash(password,salt); 
@@ -28,17 +28,30 @@ router.post("/login",async(req, res) => {
     const { email, password } = req.body;
     const userExists = await pool.query(selectUser, [email]);
     if(!userExists.rows.length ){
-      return res.status(401).send({failMessage:require('../constants/messages').incorrectCreds});
+      return res.send({failMessage:require('../constants/messages').incorrectCreds});
     }
     const isPasswordsMatched = await bcrypt.compare(password,userExists.rows[0].password);
     if(!isPasswordsMatched)
-      return res.status(401).send({failMessage:require('../constants/messages').incorrectCreds});
+      return res.send({failMessage:require('../constants/messages').incorrectCreds});
       const token = jwtGenerator(userExists.rows[0].user_id);
       res.json({token});
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
+
+router.get("/user-data", authorize, async (req, res) => {
+  try {
+    const userData = await pool.query(
+      "SELECT * FROM users WHERE user_id=$1",
+      [req.user]
+    );
+    res.send(userData.rows[0]);
+  } catch (err) {
+    res.send({ error: err });
+  }
+});
+
 
 router.get('/is-verify',authorize,async(req,res)=>{
   try {
