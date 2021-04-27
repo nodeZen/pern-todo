@@ -5,6 +5,7 @@ const port = process.env.PORT;
 const path = require("path");
 const todoCrudRouter = require("./routes/crudRoutes");
 const userRouter = require("./routes/userRoutes");
+require('dotenv').config();
 
 app.use(express.json());
 app.use(cors());
