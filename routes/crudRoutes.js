@@ -16,7 +16,6 @@ router.get("/", authorize, async (req, res) => {
 });
 
 router.post("/", authorize,async (req, res) => {
-  console.log(req.body,"Request Body")
   try {
     const { userId, description } = req.body;
     const allToDos = await pool.query(

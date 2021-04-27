@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Register.scss";
-import { validateEmail } from "../../../utils";
+import validator from 'validator';
 
 const Register = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
@@ -21,23 +21,27 @@ const Register = ({ setAuth }) => {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const body = { userName, email, password };
-    if (userName.length && validateEmail(email) && password.length) {
-      try {
-        const response = await axios.post(
-          "http://localhost:3001/user/register",
-          body
-        );
-        if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          setAuth(true);
-        } else if (response.data.failMessage) {
-          setErrMessage(response.data.failMessage);
+    if(validator.isEmail(email)){
+      if (userName.length && password.length) {
+        try {
+          const response = await axios.post(
+            "http://localhost:3001/user/register",
+            body
+          );
+          if (response.data.token) {
+            localStorage.setItem("token", response.data.token);
+            setAuth(true);
+          } else if (response.data.failMessage) {
+            setErrMessage(response.data.failMessage);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        setErrMessage("Please fill in all fields");
       }
-    } else {
-      setErrMessage("Please fill in all fields");
+    }else{
+      setErrMessage("Invalid email id");
     }
   };
 

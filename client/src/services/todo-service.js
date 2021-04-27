@@ -18,7 +18,6 @@ export const addTodo = (userId,description) => (dispatch) => {
         userId,
         description
     }
-    console.log(body,"Body")
     return axios
     .post("http://localhost:3001/todo-crud",body, {
       headers: {

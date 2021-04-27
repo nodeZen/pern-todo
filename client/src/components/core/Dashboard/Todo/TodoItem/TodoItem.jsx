@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteTodo, editTodo } from "../../../../../services/todo-service";
 
@@ -26,11 +26,11 @@ const TodoItem = ({ id, desrciption }) => {
   };
 
   return (
-    <div className="row my-3">
+    <div className="row my-3 todo-item">
       <div className="col-md-10">
         {editMode ? (
           <input
-            className="form-control"
+            className="form-control edit-task"
             value={taskDescription}
             onChange={taskChangeHandler}
           />

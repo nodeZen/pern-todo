@@ -13,7 +13,7 @@ const Todo = ({ userId }) => {
 
   useEffect(() => {
     dispatch(getAllTodos());
-  }, []);
+  }, [dispatch]);
 
   const addTaskHandler = (e) => {
     e.preventDefault();
