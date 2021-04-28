@@ -5,5 +5,4 @@ const poolConfig = {
     password:'SuryaReddy@1995',
     database:'perntodo'
    }
-    
 module.exports = poolConfig;

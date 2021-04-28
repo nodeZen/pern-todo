@@ -1,12 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config();
 const app = express();
 const port = process.env.PORT;
 const path = require("path");
 const todoCrudRouter = require("./routes/crudRoutes");
 const userRouter = require("./routes/userRoutes");
-require('dotenv').config();
-
 app.use(express.json());
 app.use(cors());
 app.use("/todo-crud", todoCrudRouter);
