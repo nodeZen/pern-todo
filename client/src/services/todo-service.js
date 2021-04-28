@@ -3,7 +3,7 @@ import { getNewTodoList } from "../store/todo-slice";
 
 export const getAllTodos = () => (dispatch) => {
   return axios
-    .get("/todo-crud", {
+    .get("/todo-crud/", {
       headers: {
         token: localStorage.token,
       },
@@ -19,7 +19,7 @@ export const addTodo = (userId,description) => (dispatch) => {
         description
     }
     return axios
-    .post("/todo-crud",body, {
+    .post("/todo-crud/",body, {
       headers: {
         token: localStorage.token,
       },
