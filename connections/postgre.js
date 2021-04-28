@@ -1,10 +1,8 @@
-const {Pool} = require('pg');
-const poolConfig = require('../config/postgre');
+const { Pool } = require("pg");
 
-const prodConfig = {
-    connectionString:process.env.DATABASE_URL
-}
-
-const pool = new Pool(process.env.NODE_ENV === "production"?prodConfig:poolConfig);
+const devConnectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+const pool = new Pool({
+    connectionString :  process.env.DATABASE_URL ?process.env.DATABASE_URL: devConnectionString
+});
 
 module.exports = pool;

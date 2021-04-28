@@ -29,7 +29,6 @@ function App() {
   },[])
 
   useEffect(()=>{
-    console.log(process.env.NODE_ENV,"Environment");
     isAuth();
   },[isAuth]);
 
