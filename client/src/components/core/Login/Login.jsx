@@ -21,7 +21,7 @@ const Register = ({ setAuth }) => {
     const body = { email, password };
     try {
       const response = await axios.post(
-        "http://localhost:3001/user/login",
+        "/user/login",
         body
       );
       if(response.data.token){
