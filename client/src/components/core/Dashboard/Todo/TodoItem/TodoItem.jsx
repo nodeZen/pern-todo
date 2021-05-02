@@ -15,10 +15,10 @@ const TodoItem = ({ id, desrciption }) => {
   };
 
   const editTaskHandler = () => {
-    if(taskDescription.length){
+    if (taskDescription.length) {
       dispatch(editTodo(id, taskDescription));
       setEditMode(false);
-    }else{
+    } else {
       setErrMessage("Please enter task description");
       setEditMode(true);
     }
@@ -58,7 +58,7 @@ const TodoItem = ({ id, desrciption }) => {
           </button>
         ) : (
           <button
-            className="btn btn-success todo-item-button" 
+            className="btn btn-success todo-item-button"
             onClick={() => {
               editTaskHandler();
             }}

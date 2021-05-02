@@ -13,13 +13,13 @@ export const getAllTodos = () => (dispatch) => {
     });
 };
 
-export const addTodo = (userId,description) => (dispatch) => {
-    const body = {
-        userId,
-        description
-    }
-    return axios
-    .post("/todo-crud",body, {
+export const addTodo = (userId, description) => (dispatch) => {
+  const body = {
+    userId,
+    description,
+  };
+  return axios
+    .post("/todo-crud", body, {
       headers: {
         token: localStorage.token,
       },
@@ -31,26 +31,28 @@ export const addTodo = (userId,description) => (dispatch) => {
 
 export const deleteTodo = (todoId) => (dispatch) => {
   return axios
-  .delete("/todo-crud/"+todoId, {
-    headers: {
-      token: localStorage.token,
-    },
-  })
-  .then((response) => {
-    dispatch(getAllTodos());
-  });
+    .delete("/todo-crud/" + todoId, {
+      headers: {
+        token: localStorage.token,
+      },
+    })
+    .then((response) => {
+      dispatch(getAllTodos());
+    });
 };
 
-export const editTodo = (todoId,description) => (dispatch) => {
+export const editTodo = (todoId, description) => (dispatch) => {
   return axios
-  .put("/todo-crud/"+todoId,{description}, {
-    headers: {
-      token: localStorage.token,
-    },
-  })
-  .then((response) => {
-    dispatch(getAllTodos());
-  });
+    .put(
+      "/todo-crud/" + todoId,
+      { description },
+      {
+        headers: {
+          token: localStorage.token,
+        },
+      }
+    )
+    .then((response) => {
+      dispatch(getAllTodos());
+    });
 };
-
-

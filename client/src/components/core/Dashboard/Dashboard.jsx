@@ -1,31 +1,23 @@
-import React, { Fragment, useEffect, useState } from "react";
-import axios from "axios";
+import React, { Fragment, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Todo from "./Todo/Todo";
 import "./Dashboard.scss";
+import { setAuthentication } from "../../../store/auth-slice";
+import { getUserData } from "../../../services/auth-services";
 
-const Dashboard = ({ setAuth }) => {
-  const [name, setName] = useState("");
-  const [id,setId]=useState("");
-  
-  const getData = async () => {
-    const response = await axios.get("/user/user-data", {
-      headers: {
-        token: localStorage.token,
-      },
-    });
-
-    setName(response.data.user_name);
-    setId(response.data.user_id);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+const Dashboard = () => {
+  const name = useSelector((state) => state.auth.userName);
+  const id = useSelector((state) => state.auth.userId);
+  const dispatch = useDispatch();
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
-    setAuth(false);
+    dispatch(setAuthentication(false));
   };
+
+  useEffect(() => {
+    dispatch(getUserData());
+  });
 
   return (
     <Fragment>
@@ -41,7 +33,7 @@ const Dashboard = ({ setAuth }) => {
         </div>
       </div>
       <h2 className="my-3 text-center">Hi {name}</h2>
-      <Todo userId={id}/>
+      <Todo userId={id} />
     </Fragment>
   );
 };

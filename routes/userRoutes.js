@@ -60,7 +60,10 @@ router.post("/login", async (req, res) => {
 router.get("/user-data", authorize, async (req, res) => {
   try {
     const userData = await pool.query(selectById, [req.user]);
-    res.send(userData.rows[0]);
+    res.send({
+      userId: userData.rows[0].user_id,
+      userName: userData.rows[0].user_name,
+    });
   } catch (err) {
     res.send({ error: err });
   }

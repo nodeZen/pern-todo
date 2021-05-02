@@ -47,17 +47,21 @@ const Todo = ({ userId }) => {
         </div>
         {errMessage && <label className="error-message">{errMessage}</label>}
       </form>
-      {allTodos.length? <div className="container my-5">
-        {allTodos.map((todo) => {
-          return (
-            <TodoItem
-              key={todo.todo_id}
-              id={todo.todo_id}
-              desrciption={todo.description}
-            />
-          );
-        })}
-      </div>:<h1 className="text-center my-5 no-todo">No ToDos in the list!</h1>}
+      {allTodos.length ? (
+        <div className="container my-5">
+          {allTodos.map((todo) => {
+            return (
+              <TodoItem
+                key={todo.todo_id}
+                id={todo.todo_id}
+                desrciption={todo.description}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <h1 className="text-center my-5 no-todo">No ToDos in the list!</h1>
+      )}
     </div>
   );
 };

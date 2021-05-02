@@ -1,14 +1,16 @@
 import React, { Fragment, useState } from "react";
-import axios from "axios";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { loginService } from "../../../services/auth-services";
+import { useDispatch, useSelector } from "react-redux";
+const Register = () => {
+  const dispatch = useDispatch();
 
-const Register = ({ setAuth }) => {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
 
-  const [errMessage, setErrMessage] = useState();
+  const errMessage = useSelector((state) => state.auth.errMessage);
 
   const { email, password } = inputs;
 
@@ -19,20 +21,7 @@ const Register = ({ setAuth }) => {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const body = { email, password };
-    try {
-      const response = await axios.post(
-        "/user/login",
-        body
-      );
-      if(response.data.token){
-        localStorage.setItem("token",response.data.token);
-      setAuth(true);
-      }else if(response.data.failMessage){
-        setErrMessage(response.data.failMessage);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(loginService(body));
   };
 
   return (
@@ -55,13 +44,13 @@ const Register = ({ setAuth }) => {
           value={password}
           onChange={onChangeInputs}
         ></input>
-        {errMessage && (
-          <div className="my-3 error-message">{errMessage}</div>
-        )}
+        {errMessage && <div className="my-3 error-message">{errMessage}</div>}
         <button className="btn btn-success btn-block" type="submit">
           Login
         </button>
-        <div className="my-3">Don't have an account?{" "}<Link to="/register">Register</Link></div> 
+        <div className="my-3">
+          Don't have an account? <Link to="/register">Register</Link>
+        </div>
       </form>
     </Fragment>
   );

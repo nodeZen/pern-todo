@@ -1,16 +1,21 @@
 import React, { Fragment, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Register.scss";
-import validator from 'validator';
+import validator from "validator";
+import { registerService } from "../../../services/auth-services";
+import { useDispatch, useSelector } from "react-redux";
+import { setErrorMessage } from "../../../store/auth-slice";
 
-const Register = ({ setAuth }) => {
+const Register = () => {
   const [inputs, setInputs] = useState({
     userName: "",
     email: "",
     password: "",
   });
-  const [errMessage, setErrMessage] = useState();
+
+  const dispatch = useDispatch();
+
+  const errMessage = useSelector((state) => state.auth.errMessage);
 
   const { email, password, userName } = inputs;
 
@@ -21,27 +26,14 @@ const Register = ({ setAuth }) => {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const body = { userName, email, password };
-    if(validator.isEmail(email)){
+    if (validator.isEmail(email)) {
       if (userName.length && password.length) {
-        try {
-          const response = await axios.post(
-            "/user/register",
-            body
-          );
-          if (response.data.token) {
-            localStorage.setItem("token", response.data.token);
-            setAuth(true);
-          } else if (response.data.failMessage) {
-            setErrMessage(response.data.failMessage);
-          }
-        } catch (error) {
-          console.log(error);
-        }
+        dispatch(registerService(body));
       } else {
-        setErrMessage("Please fill in all fields");
+        dispatch(setErrorMessage("Please fill in all fields"));
       }
-    }else{
-      setErrMessage("Invalid email id");
+    } else {
+      dispatch(setErrorMessage("Invalid email id"));
     }
   };
 
@@ -77,7 +69,9 @@ const Register = ({ setAuth }) => {
         <button className="btn btn-success btn-block" type="submit">
           Register
         </button>
-        <div className="my-3">Already have an account?{" "}<Link to="/login">Login</Link></div> 
+        <div className="my-3">
+          Already have an account? <Link to="/login">Login</Link>
+        </div>
       </form>
     </Fragment>
   );

@@ -12,6 +12,6 @@ module.exports = async (req, res, next) => {
     req.user = payload.user;
     next();
   } catch (err) {
-    res.json({message:err.message});
+    res.json({ message: err.message });
   }
 };

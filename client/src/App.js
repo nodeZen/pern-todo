@@ -1,4 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import React, { Fragment, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -10,27 +11,16 @@ import {
 import Login from "./components/core/Login/Login";
 import Register from "./components/core/Register/Register";
 import Dashboard from "./components/core/Dashboard/Dashboard";
-import axios from "axios";
+
+import { isUserAuthenticated } from "./services/auth-services";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
-  const setAuth = (boolen) => {
-    setIsAuthenticated(boolen);
-  };
-
-  const isAuth = useCallback(async()=>{
-    const response  = await axios.get("/user/is-verify",{
-      headers:{
-        token:localStorage.token
-      }
-    });
-    response.data === true ? setAuth(true) : setAuth(false);
-  },[])
-
-  useEffect(()=>{
-    isAuth();
-  },[isAuth]);
+  useEffect(() => {
+    dispatch(isUserAuthenticated());
+  }, [dispatch]);
 
   return (
     <Fragment>
@@ -42,7 +32,7 @@ function App() {
               path="/"
               render={(props) =>
                 !isAuthenticated ? (
-                  <Login {...props} setAuth={setAuth} />
+                  <Login {...props} />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -53,7 +43,7 @@ function App() {
               path="/login"
               render={(props) =>
                 !isAuthenticated ? (
-                  <Login {...props} setAuth={setAuth} />
+                  <Login {...props} />
                 ) : (
                   <Redirect to="/dashboard" />
                 )
@@ -64,7 +54,7 @@ function App() {
               path="/register"
               render={(props) =>
                 !isAuthenticated ? (
-                  <Register {...props} setAuth={setAuth} />
+                  <Register {...props} />
                 ) : (
                   <Redirect to="/login" />
                 )
@@ -75,7 +65,7 @@ function App() {
               path="/dashboard"
               render={(props) =>
                 isAuthenticated ? (
-                  <Dashboard {...props} setAuth={setAuth} />
+                  <Dashboard {...props} />
                 ) : (
                   <Redirect to="/login" />
                 )
