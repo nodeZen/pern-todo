@@ -30,22 +30,16 @@ function App() {
             <Route
               exact
               path="/"
-              render={(props) =>
-                !isAuthenticated ? (
-                  <Login {...props} />
-                ) : (
-                  <Redirect to="/dashboard" />
-                )
-              }
+              render={(props) =><Redirect to="/dashboard" />}
             />
             <Route
               exact
               path="/login"
               render={(props) =>
-                !isAuthenticated ? (
-                  <Login {...props} />
-                ) : (
+                isAuthenticated ? (
                   <Redirect to="/dashboard" />
+                ) : (
+                  <Login {...props} />
                 )
               }
             />
@@ -53,10 +47,10 @@ function App() {
               exact
               path="/register"
               render={(props) =>
-                !isAuthenticated ? (
-                  <Register {...props} />
-                ) : (
+                isAuthenticated ? (
                   <Redirect to="/login" />
+                ) : (
+                  <Register {...props} />
                 )
               }
             />
